@@ -15,6 +15,13 @@ export default function Login({Router}) {
 
     );
 
+    const [errorMessage, setErrorMessage] = useState('');
+
+
+    const showError = (message) => {
+        setErrorMessage(message);
+    }
+
 
 
 
@@ -26,6 +33,11 @@ export default function Login({Router}) {
 
     const onSubmit = async e => {
         e.preventDefault();
+        //verifications
+        if (user.username === '' || user.password === '') {
+            showError('Veuillez remplir tous les champs')
+            return
+        }
 
         const requestOptions = {
             method: 'GET',
@@ -37,6 +49,7 @@ export default function Login({Router}) {
         const data = await response.json();
         //envoie du token dans le localstorage
          localStorage.setItem('token', JSON.stringify(user.username))
+        localStorage.setItem('token', JSON.stringify(user.password))
 
 
         // TODO: check if user is in database
@@ -67,11 +80,15 @@ export default function Login({Router}) {
                         <input onChange={e => setUser({...user, [e.target.name]: e.target.value})} type="password" value={user.password} name='password'/>
 
                     </li>
+                    <p className="error">{errorMessage}</p>
                     <button   type="submit">Connexion</button>
                 </ul>
               
             </form>
             <style jsx>{`
+                .error {
+                    color: red;
+                }
                 .wrapper {
                     display: flex;
                     flex-direction: column;

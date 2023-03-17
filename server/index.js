@@ -40,7 +40,6 @@ const userSchema = new Schema({
     username: String,
     password: String,
     email: String,
-    rooms: Array,
     messages: Array
 
 }
@@ -74,7 +73,7 @@ app.post('/signup', (req, res) => {
         username: req.body.username,
         password: req.body.password,
         email: req.body.email,
-        rooms: []
+
 
     })
     //save to database
@@ -93,6 +92,24 @@ app.get('/signup', (req, res) => {
 }
 );
 
+app.get('/profile', (req, res) => {
+    const { username, email } = req.query;
+    User.findOne({ username: username, password: password })
+        .then((user) => {
+            if (user) {
+                res.json(true);
+
+            } else {
+                res.json(false);
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: 'An error occurred while searching for the user.' });
+        });
+
+
+});
 
 
 

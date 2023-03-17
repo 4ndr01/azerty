@@ -3,16 +3,27 @@ import React, { Component } from "react";
 import Switch from "react-switch";
 import io from "socket.io-client";
 import {useEffect, useState} from "react";
-import {BrowserRouter, Link, Route} from 'react-router-dom';
+import {BrowserRouter, Link, redirect, Route, useNavigate} from 'react-router-dom';
 import darkMode from '../src/darkMode.css';
 import Login from "./route/login";
+
 const socket = io("http://localhost:3001");
 
 
 
+
 function App() {
+    const navigate = useNavigate();
 
 
+
+
+
+    const logout = (e) => {
+        e.preventDefault()
+        localStorage.removeItem('token')
+        navigate('/login')
+    }
 
 
     Login.data = JSON.parse(localStorage.getItem('token'))
@@ -55,14 +66,10 @@ function App() {
     function sendMessage(e, message) {
         e.preventDefault();
         //cas d'erreur
-        if (e.target.username.value === '' || e.target.text.value === '') {
-            alert("Veuillez remplir tous les champs")
-            //n'envoie pas le message
-            return;
-        }
+
 
         const msg = {
-            username: e.target.username.value,
+            username: Login.data = JSON.parse(localStorage.getItem('token')),
             text: e.target.text.value
         };
         socket.emit('CLIENT_MSG', msg);
@@ -86,6 +93,7 @@ function App() {
                                 <h2>Bonjour {Login.data}</h2>
                                 <a href={"/profil"}>Profil</a>
                                 <a href="/signup">Login</a>
+                                <button onClick={logout}>Logout</button>
                                 <div className="room">
                                     <input type="text" placeholder="Room name" value={roomName} onChange={handleRoomNameChange} className={"input_room"}/>
                                 </div>
@@ -108,11 +116,7 @@ function App() {
                         </div>
                         <form onSubmit={e => sendMessage(e)}>
                             <div className="card-footer">
-                                <input id="username"
-                                       type="text"
-                                       placeholder="Username"
-                                       className="form-control"
-                                />
+
                                 <br/>
                                 <input id="text"
                                        type="text"
