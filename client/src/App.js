@@ -5,6 +5,7 @@ import io from "socket.io-client";
 import {useEffect, useState} from "react";
 import {BrowserRouter, Link, Route} from 'react-router-dom';
 import darkMode from '../src/darkMode.css';
+import Login from "./route/login";
 const socket = io("http://localhost:3001");
 
 
@@ -14,6 +15,7 @@ function App() {
 
 
 
+    Login.data = JSON.parse(localStorage.getItem('token'))
 
 
 
@@ -81,6 +83,7 @@ function App() {
                         <div className="card-body">
                             <div className="wrapper">
                                 <h1>Application</h1>
+                                <h2>Bonjour {Login.data}</h2>
                                 <a href={"/profil"}>Profil</a>
                                 <a href="/signup">Login</a>
                                 <div className="room">

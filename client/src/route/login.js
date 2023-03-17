@@ -2,6 +2,7 @@ import React, {useContext, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import {AppContext, AppProvider} from '../context/appContext'
 import {ErrorMessage} from "../context/utils";
+import Profil from "./profil";
 
 export default function Login({Router}) {
     const appContext = useContext(AppContext)
@@ -34,6 +35,9 @@ export default function Login({Router}) {
         const response = await fetch(`http://localhost:3001/signin?username=${user.username}&password=${user.password}`, requestOptions);
 
         const data = await response.json();
+        //envoie du token dans le localstorage
+         localStorage.setItem('token', JSON.stringify(user.username))
+
 
         // TODO: check if user is in database
         if (data === true) {

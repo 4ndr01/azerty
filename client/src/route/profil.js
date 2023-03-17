@@ -9,11 +9,17 @@ export default function Profil({Router}) {
 
 
 
+//recupere le token dans le localstorage
+    Login.data = JSON.parse(localStorage.getItem('token'))
+
+    console.log(Login.data)
 
 
     return (
         <section className="wrapper">
             <h1>Profil</h1>
+            <p>Pseudo : {Login.data}</p>
+
         </section>
     );
 
