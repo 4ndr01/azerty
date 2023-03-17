@@ -4,14 +4,13 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import {AppProvider} from "./context/appContext";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import ChatRoom from "./route/ChatRoom";
 
 ReactDOM.render(
   <React.StrictMode>
     <AppProvider />
       <BrowserRouter>
           <Routes>
-              <Route exact path="/:roomId" component={ChatRoom} />
+
           </Routes>
       </BrowserRouter>
   </React.StrictMode>,

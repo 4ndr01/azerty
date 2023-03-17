@@ -5,11 +5,18 @@ import io from "socket.io-client";
 import {useEffect, useState} from "react";
 import {BrowserRouter, Link, Route} from 'react-router-dom';
 import darkMode from '../src/darkMode.css';
-
 const socket = io("http://localhost:3001");
 
 
+
 function App() {
+
+
+
+
+
+
+
 
     const [roomName, setRoomName] = useState('');
     const handleRoomNameChange = (e) => {
@@ -18,19 +25,19 @@ function App() {
     }
     const [messages, setMessages] = useState([]);
 
-    const [theme, setTheme] = useState('light');
-    localStorage.setItem('theme', theme);
-    const toggleTheme = () => {
-        if (theme === 'light') {
-            setTheme('dark');
-        } else {
-            setTheme('light');
-        }
-    };
-    useEffect(() => {
-        document.body.className = theme;
-    }, [theme]);
+    const [isDarkTheme, setIsDarkTheme] = useState(false);
 
+    useEffect(() => {
+        if (isDarkTheme) {
+            document.documentElement.classList.add('dark-theme');
+        } else {
+            document.documentElement.classList.remove('dark-theme');
+        }
+    }, [isDarkTheme]);
+
+    function toggleDarkTheme() {
+        setIsDarkTheme(!isDarkTheme);
+    }
 
     function setNewMessage(msg) {
         setMessages([
@@ -74,11 +81,12 @@ function App() {
                         <div className="card-body">
                             <div className="wrapper">
                                 <h1>Application</h1>
+                                <a href={"/profil"}>Profil</a>
                                 <a href="/signup">Login</a>
                                 <div className="room">
                                     <input type="text" placeholder="Room name" value={roomName} onChange={handleRoomNameChange} className={"input_room"}/>
                                 </div>
-                                <button className="theme-button" onClick={toggleTheme}>Theme</button>
+                                <button className="theme-button" onClick={toggleDarkTheme}>Theme</button>
                                 <Link to={`${roomName}`} className="enter-room-button">Join Room</Link>
 
 

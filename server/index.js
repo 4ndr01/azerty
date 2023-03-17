@@ -40,7 +40,8 @@ const userSchema = new Schema({
     username: String,
     password: String,
     email: String,
-    rooms: Array
+    rooms: Array,
+    messages: Array
 
 }
 );
@@ -91,7 +92,6 @@ app.get('/signup', (req, res) => {
 
 }
 );
-
 
 
 

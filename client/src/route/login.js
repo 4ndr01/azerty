@@ -1,6 +1,7 @@
 import React, {useContext, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import {AppContext, AppProvider} from '../context/appContext'
+import {ErrorMessage} from "../context/utils";
 
 export default function Login({Router}) {
     const appContext = useContext(AppContext)
@@ -17,7 +18,8 @@ export default function Login({Router}) {
 
 
 
-    const onChange = e => setUser({...user, [e.target.name]: e.target.value});
+
+
 
 
 
@@ -25,11 +27,12 @@ export default function Login({Router}) {
         e.preventDefault();
 
         const requestOptions = {
-            method: 'POST',
+            method: 'GET',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
+            //body: JSON.stringify(user)
         };
-        const response = await fetch(`http://localhost:3001/login/${user.username},${user.password}`, requestOptions);
+        const response = await fetch(`http://localhost:3001/signin?username=${user.username}&password=${user.password}`, requestOptions);
+
         const data = await response.json();
 
         // TODO: check if user is in database
@@ -37,7 +40,8 @@ export default function Login({Router}) {
             appContext.user.loggedIn = true;
             navigate('/home')
         }else {
-            alert('Identifiant ou mot de passe incorrect')
+            ErrorMessage('Identifiant ou mot de passe incorrect')
+
         }
     }
 
@@ -51,15 +55,17 @@ export default function Login({Router}) {
                 <ul>
                     <li>
                         <label>Identifiant</label>
-                        <input  value={user.username} onChange={onChange} name='username'/>
+                        <input  onChange={e => setUser({...user, [e.target.name]: e.target.value})} type="text" value={user.username} name='username'/>
+
                     </li>
                     <li>
                         <label>Mot de passe</label>
-                        <input value={user.password} onChange={onChange} name='password'/>
+                        <input onChange={e => setUser({...user, [e.target.name]: e.target.value})} type="password" value={user.password} name='password'/>
 
                     </li>
                     <button   type="submit">Connexion</button>
                 </ul>
+              
             </form>
             <style jsx>{`
                 .wrapper {

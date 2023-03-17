@@ -6,6 +6,17 @@ export default function Signup() {
     const appContext = useContext(AppContext)
     const navigate = useNavigate();
 
+
+    //messages d'erreur
+
+    const [errorMessage, setErrorMessage] = useState(null);
+
+
+    function showError(message) {
+        setErrorMessage(message);
+    }
+
+
    //method Post
     const [user, setUser] = useState({
         username: '',
@@ -22,7 +33,7 @@ export default function Signup() {
 
         if (user.password !== user.password2) {
             console.log('Les mots de passe ne correspondent pas')
-            alert('Les mots de passe ne correspondent pas')
+            showError('Les mots de passe ne correspondent pas')
         } else {
             const requestOptions = {
                 method: 'POST',
@@ -34,7 +45,7 @@ export default function Signup() {
 
             // TODO: check if user is in database
             if (data === true) {
-                alert('vous avez déjà un compte')
+                showError('vous avez deja un compte')
             }
 
             if (appContext.user.loggedIn === false) {
@@ -64,6 +75,7 @@ export default function Signup() {
                         <label>Confirmer le mot de passe</label>
                         <input type="password" value={user.password2} onChange={onChange} name='password2'/>
                     </li>
+                    {errorMessage && <p>{errorMessage}</p>}
                     <button  type="submit">S'inscrire</button>
                     <a href="/login">Déjà un compte ?</a>
                 </ul>
