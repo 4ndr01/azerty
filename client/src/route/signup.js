@@ -1,6 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {AppContext} from '../context/appContext'
+import {useEffect} from 'react';
 
 export default function Signup() {
     const appContext = useContext(AppContext)
@@ -18,14 +19,32 @@ export default function Signup() {
 
     const onChange = e => setUser({...user, [e.target.name]: e.target.value});
 
+    const [errorMessage, setErrorMessage] = useState('');
 
+
+    const ShowError = (message) => {
+        setErrorMessage(message);
+    }
     const onSubmit = async e => {
         e.preventDefault();
 
-        if (user.password !== user.password2) {
+        if (user.password !== user.password2 ||user.username) {
+            ShowError('Les mots de passe ne correspondent pas')
             console.log('Les mots de passe ne correspondent pas')
-            alert('Les mots de passe ne correspondent pas')
-        } else {
+            return(
+                <section>
+                <input type="password" name="password2" value={user.password2} onChange={onChange} placeholder="Confirmer le mot de passe" required/>
+                <p>{errorMessage}</p>
+
+            </section>
+            )
+
+        }
+        if (user.username === '' || user.email === '' || user.password === '' || user.password2 === '') {
+            ShowError('Veuillez remplir tous les champs')
+            console.log('Veuillez remplir tous les champs')
+        }
+        else {
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -46,6 +65,9 @@ export default function Signup() {
             }
 
         }
+
+
+
     }
 
     return (
@@ -63,12 +85,13 @@ export default function Signup() {
                     </li>
                     <li>
                         <label>Mot de passe</label>
-                        <input type="password" value={user.password} onChange={onChange} name='password'/>
+                        <input className={"mdp"} type="password" value={user.password} onChange={onChange} name='password'/>
                     </li>
                     <li>
                         <label>Confirmer le mot de passe</label>
-                        <input type="password" value={user.password2} onChange={onChange} name='password2'/>
+                        <input className={"mdp2"} type="password" value={user.password2} onChange={onChange} name='password2'/>
                     </li>
+                    <p className="error">{errorMessage}</p>
                     <button  type="submit">S'inscrire</button>
                     <a href="/login">Déjà un compte ?</a>
                 </ul>
@@ -82,6 +105,9 @@ export default function Signup() {
                     height: 100vh;
                     width: 100vw;
                     background: #f5f5f5;
+                }
+                .error {
+                    color: red;
                 }
                 .wrapper h1 {
                     font-size: 2rem;
@@ -180,6 +206,20 @@ export default function Signup() {
                       
                       
                 }
+                /*animation*/
+                @keyframes fadeIn {
+                    0% {
+                        opacity: 0;
+                    }
+                    100% {
+                        opacity: 1;
+                    }
+                  
+                }
+                .wrapper {
+                    animation: fadeIn 0.5s ease-in-out;
+                }
+                
                 
                 `}</style>
         </section>

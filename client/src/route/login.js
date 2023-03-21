@@ -1,8 +1,9 @@
-import React, {useContext, useState} from "react";
-import { useNavigate } from 'react-router-dom';
+import React, {useContext, useEffect, useState} from "react";
+import {Link, useNavigate} from 'react-router-dom';
 import {AppContext, AppProvider} from '../context/appContext'
 import {ErrorMessage} from "../context/utils";
 import Profil from "./profil";
+import app from "../App";
 
 export default function Login({Router}) {
     const appContext = useContext(AppContext)
@@ -12,7 +13,6 @@ export default function Login({Router}) {
         username: '',
         password: ''
         }
-
     );
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -22,14 +22,14 @@ export default function Login({Router}) {
         setErrorMessage(message);
     }
 
+    useEffect(() => {
 
+        if (appContext.currentUser) {
+            console.log(appContext.currentUser)
+            navigate('/home')
+        }
 
-
-
-
-
-
-
+    }, [appContext.currentUser])
 
     const onSubmit = async e => {
         e.preventDefault();
@@ -51,11 +51,12 @@ export default function Login({Router}) {
          localStorage.setItem('token', JSON.stringify(user.username))
         localStorage.setItem('token', JSON.stringify(user.password))
 
+        console.log(data)
 
         // TODO: check if user is in database
-        if (data === true) {
+        if (data) {
+            appContext.setCurrentUser(data)
             appContext.user.loggedIn = true;
-            navigate('/home')
         }else {
             ErrorMessage('Identifiant ou mot de passe incorrect')
 
@@ -82,6 +83,8 @@ export default function Login({Router}) {
                     </li>
                     <p className="error">{errorMessage}</p>
                     <button   type="submit">Connexion</button>
+                    <Link to={'/signup'}>Nouveau ?</Link>
+
                 </ul>
               
             </form>
@@ -194,6 +197,17 @@ export default function Login({Router}) {
                     background: black;
                     color: #fff;
                 }
+                /* animation */
+                .wrapper {
+                    animation: fadeIn 0.5s ease-in-out;
+                    
+                }
+                @keyframes fadeIn {
+                    0% {
+                        opacity: 0;
+                    }
+                }
+                
                 `}</style>
         </section>
 

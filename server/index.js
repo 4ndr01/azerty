@@ -92,25 +92,34 @@ app.get('/signup', (req, res) => {
 }
 );
 
+
+
+
+//page profil
 app.get('/profile', (req, res) => {
-    const { username, email } = req.query;
-    User.findOne({ username: username, password: password })
-        .then((user) => {
-            if (user) {
-                res.json(true);
 
-            } else {
-                res.json(false);
-            }
-        })
-        .catch((err) => {
-            console.error(err);
-            res.status(500).json({ error: 'An error occurred while searching for the user.' });
-        });
+        const { username, email } = req.query;
+
+        User.findOne({ username: username, email: email })
+
+            .then((user) => {
+                if (user) {
+
+                    res.json(user);
+
+                }
+
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).json({ error: 'An error occurred while searching for the user.' });
+            });
 
 
-});
 
+
+    }
+);
 
 
 

@@ -6,8 +6,18 @@ import {useEffect, useState} from "react";
 import {BrowserRouter, Link, redirect, Route, useNavigate} from 'react-router-dom';
 import darkMode from '../src/darkMode.css';
 import Login from "./route/login";
+import api from "./context/apiContext";
+import {AppContext} from "./context/appContext";
 
 const socket = io("http://localhost:3001");
+
+//TODO: appel de l'api pour recuperer les gif
+
+
+
+
+
+
 
 
 
@@ -61,11 +71,14 @@ function App() {
 
     socket.on('TEST_MSG', msg => {
         setNewMessage(msg);
+
     });
 
     function sendMessage(e, message) {
         e.preventDefault();
-        //cas d'erreur
+        if (e.target.text.value === '') {
+            return;
+        }
 
 
         const msg = {
@@ -110,6 +123,7 @@ function App() {
                                         <div>{msg.username}: {msg.text}</div>
 
 
+
                                     )
                                 })}
                             </div>
@@ -124,14 +138,18 @@ function App() {
                                        className="form-control"
                                 />
                                 <br/>
-                                <button type="submit"
-                                        className="submit">
-                                    send
-                                </button>
-                                <button>
-                                    gif
-                                </button>
+                                <div className="clearfix">
+                                    <button type="submit"
+                                            className="submit">
+                                        send
+                                    </button>
+
+
+
+                                </div>
                             </div>
+
+
                         </form>
                     </div>
                 </div>
@@ -139,6 +157,13 @@ function App() {
             <style jsx="true">{`
                 .App {
                     text-align: center;
+                    
+                }
+                
+                .clearfix {
+                    display: flex;
+                    justify-content: space-between;
+                    
                     
                 }
                 .card {
@@ -185,13 +210,15 @@ function App() {
                     margin-bottom: 1rem;
                     
                 }
-                .wrapper form {
-                    width: 100%;
-                    max-width: 300px;
-                    padding: 15px;
-                    margin: 0 auto;
+                .wrapper h2 {
+                    font-size: 1.5rem;
+                    font-weight: 400;
+                    margin-bottom: 1rem;
                     
                 }
+                
+                
+                
                 button {
                     background: black;
                     border: none;
@@ -210,6 +237,78 @@ function App() {
                     border-radius: 0.25rem;
                     
                 }
+                /*animation*/
+                .wrapper {
+                    animation: fadeIn ease 5s;
+                    animation-iteration-count: 1;
+                    animation-fill-mode: forwards;
+                    
+                }
+                @keyframes fadeIn {
+                    0% {
+                        opacity: 0;
+                    }
+                    100% {
+                        opacity: 1;
+                    }
+                }
+                .theme-button {
+                    background: #172b4d;
+                    color: #fff;
+                    border: none;
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.25rem;
+                    cursor: pointer;
+                    margin-top: 1rem;
+                    margin-left: 1rem;
+                    
+                }
+                .enter-room-button {
+                    background: #172b4d;
+                    color: #fff;
+                    border: none;
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.25rem;
+                    cursor: pointer;
+                    margin-top: 1rem;
+                    margin-left: 1rem;
+                }
+                .input_room {
+                    width: 100%;
+                    padding: 0.5rem;
+                    margin-top: 1rem;
+                    border: 1px solid #ccc;
+                    border-radius: 0.25rem;
+                    
+                }
+                .room {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    
+                }
+                /*responsive*/
+                @media (max-width: 768px) {
+                    .wrapper {
+                        width: 100%;
+                        padding: 0;
+                        
+                    }
+                    
+                }
+                /*responsive tchat*/
+                @media (max-width: 768px) {
+                    .card {
+                        width: 100%;
+                        padding: 0;
+                        
+                    }
+                }
+                
+                
+                
+                
                 
             `}</style>
         </div>
