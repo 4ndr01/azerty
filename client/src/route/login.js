@@ -47,13 +47,11 @@ export default function Login({Router}) {
         const response = await fetch(`http://localhost:3001/signin?username=${user.username}&password=${user.password}`, requestOptions);
 
         const data = await response.json();
-        //envoie du token dans le localstorage
-         localStorage.setItem('token', JSON.stringify(user.username))
-        localStorage.setItem('token', JSON.stringify(user.password))
+
 
         console.log(data)
 
-        // TODO: check if user is in database
+        //verifier si le user existe
         if (data) {
             appContext.setCurrentUser(data)
             appContext.user.loggedIn = true;

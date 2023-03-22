@@ -26,6 +26,22 @@ function App() {
     const navigate = useNavigate();
 
 
+    const [user, setUser] = useState(
+        {
+            username: '',
+
+        }
+    );
+
+    useEffect(() => {
+
+        if (appContext.currentUser) {
+            setUser(appContext.currentUser)
+            console.log(appContext.currentUser)
+        }
+
+    }
+    , [appContext.currentUser, appContext])
 
 
 
@@ -102,10 +118,9 @@ function App() {
                     <div className="card">
                         <div className="card-body">
                             <div className="wrapper">
-                                <h1>Application</h1>
-                                <h2>Bonjour {Login.data}</h2>
-                                <a href={"/profil"}>Profil</a>
-                                <a href="/signup">Login</a>
+                               <img></img>
+                                <h2>Bonjour {user.username}</h2>
+                                <Link to={'/profil'}>Profil</Link>
                                 <button onClick={logout}>Logout</button>
                                 <div className="room">
                                     <input type="text" placeholder="Room name" value={roomName} onChange={handleRoomNameChange} className={"input_room"}/>
@@ -159,6 +174,17 @@ function App() {
                     text-align: center;
                     
                 }
+                
+                img{
+                    width: 100px;
+                    height: 100px;
+                    background-image: url("https://static.vecteezy.com/ti/vecteur-libre/t2/12040969-creation-de-logo-de-lettre-sms-avec-un-fond-blanc-dans-l-illustrateur-style-de-chevauchement-de-polices-de-l-alphabet-moderne-du-logo-dessins-de-calligraphie-pour-logo-affiche-invitation-etc-vectoriel.jpg");
+                    background-position: center;
+                    
+                    border-radius: 50%;
+                }
+                  
+                
                 
                 .clearfix {
                     display: flex;

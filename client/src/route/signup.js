@@ -52,7 +52,6 @@ export default function Signup() {
             };
             const response = await fetch('http://localhost:3001/signup', requestOptions);
             const data = await response.json();
-            localStorage.setItem('token', JSON.stringify(user.email))
 
 
             // TODO: check if user is in database
