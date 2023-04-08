@@ -28,7 +28,7 @@ export default function Signup() {
     const onSubmit = async e => {
         e.preventDefault();
 
-        if (user.password !== user.password2 ||user.username) {
+        if (user.password !== user.password2 ) {
             ShowError('Les mots de passe ne correspondent pas')
             console.log('Les mots de passe ne correspondent pas')
             return(

@@ -11,6 +11,7 @@ import {AppContext} from "./context/appContext";
 
 const socket = io("http://localhost:3001");
 
+
 //TODO: appel de l'api pour recuperer les gif
 
 
@@ -25,11 +26,13 @@ const socket = io("http://localhost:3001");
 function App() {
     const navigate = useNavigate();
 
+    //recupere le token dans le localstorage
+
+
 
     const [user, setUser] = useState(
         {
             username: '',
-
         }
     );
 
@@ -52,6 +55,7 @@ function App() {
     }
 
 
+    //recupere le token dans le localstorage
     Login.data = JSON.parse(localStorage.getItem('token'))
 
 
@@ -64,19 +68,7 @@ function App() {
     }
     const [messages, setMessages] = useState([]);
 
-    const [isDarkTheme, setIsDarkTheme] = useState(false);
 
-    useEffect(() => {
-        if (isDarkTheme) {
-            document.documentElement.classList.add('dark-theme');
-        } else {
-            document.documentElement.classList.remove('dark-theme');
-        }
-    }, [isDarkTheme]);
-
-    function toggleDarkTheme() {
-        setIsDarkTheme(!isDarkTheme);
-    }
 
     function setNewMessage(msg) {
         setMessages([
@@ -84,6 +76,7 @@ function App() {
             msg
         ]);
     }
+
 
     socket.on('TEST_MSG', msg => {
         setNewMessage(msg);
@@ -98,12 +91,31 @@ function App() {
 
 
         const msg = {
-            username: Login.data = JSON.parse(localStorage.getItem('token')),
+            username: user.username,
             text: e.target.text.value
         };
         socket.emit('CLIENT_MSG', msg);
 
     }
+//fonction pour récupérer le nom d'utilisateur
+    function getUserName() {
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        };
+        fetch(`http://localhost:3001/profile?username=${user.username}`).then(r => r.json()).then(data => {
+            console.log(data)
+            setUser(data)
+
+        })
+    }
+
+    //afficher le nom d'utilisateur
+    useEffect(() => {
+
+        getUserName()
+    }
+    , [user.username])
 
 
 
@@ -125,7 +137,6 @@ function App() {
                                 <div className="room">
                                     <input type="text" placeholder="Room name" value={roomName} onChange={handleRoomNameChange} className={"input_room"}/>
                                 </div>
-                                <button className="theme-button" onClick={toggleDarkTheme}>Theme</button>
                                 <Link to={`${roomName}`} className="enter-room-button">Join Room</Link>
 
 
@@ -135,7 +146,12 @@ function App() {
                             <div className="messages">
                                 {messages.map(msg => {
                                     return (
-                                        <div>{msg.username}: {msg.text}</div>
+
+                                        <div className="msg"><p className="user">{msg.username}</p><p className="text">{msg.text}</p></div>
+
+
+
+
 
 
 
@@ -172,6 +188,26 @@ function App() {
             <style jsx="true">{`
                 .App {
                     text-align: center;
+                    
+                }
+                .msg {
+                    margin-bottom: 10px;
+                    padding: 10px;
+                    background-color: #f5f8fa;
+                    .user {
+                        font-weight: bold;
+                        font-size: 20px;
+                        color: #172b4d;
+                      
+                    }
+                    .text {
+                        font-size: 15px;
+                        color: #172b4d;
+                        
+                    }
+                   
+                   
+                   
                     
                 }
                 

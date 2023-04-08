@@ -32,7 +32,7 @@ console.log(appContext.currentUser)
 
     }, [appContext.currentUser, appContext])
 
-    //modifier les info dans la bdd
+    //modifier l'info dans la bdd
     const inputChange = (e) => {
         const {name, value} = e.target;
         setUser({...user, [name]: value})
@@ -40,7 +40,7 @@ console.log(appContext.currentUser)
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        //envoie des info dans la bdd
+        //Envoi de l'info dans la bdd
         const requestOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },

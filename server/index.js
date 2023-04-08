@@ -83,11 +83,23 @@ app.post('/signup', (req, res) => {
 });
 
 // TODO: verifier si l'utilisateur est dans la base de données
-app.get('/signup', (req, res) => {
-    User.find().then(data => {
-        res.json(data);
-    });
+app.get('/signin', (req, res) => {
+  
+        const { username, password } = req.query;
 
+        User.findOne({ username: username, password: password })
+            .then((user) => {
+                if (user) {
+                    res.json(user);
+
+                } else {
+                    res.json(false);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).json({ error: 'An error occurred while searching for the user.' });
+            });
 
 }
 );

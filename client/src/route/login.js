@@ -36,6 +36,8 @@ export default function Login({Router}) {
         //verifications
         if (user.username === '' || user.password === '') {
             showError('Veuillez remplir tous les champs')
+            localStorage.setItem('token', JSON.stringify(user.username))
+
             return
         }
 
