@@ -7,12 +7,12 @@ import {BrowserRouter, Link, redirect, Route, useNavigate} from 'react-router-do
 import darkMode from '../src/darkMode.css';
 import Login from "./route/login";
 import api from "./context/apiContext";
+
 import {AppContext} from "./context/appContext";
 
 const socket = io("http://localhost:3001");
 
 
-//TODO: appel de l'api pour recuperer les gif
 
 
 
@@ -33,8 +33,11 @@ function App() {
     const [user, setUser] = useState(
         {
             username: '',
+            image: '',
         }
     );
+
+    //afficher
 
     useEffect(() => {
 
@@ -56,7 +59,7 @@ function App() {
 
 
     //recupere le token dans le localstorage
-    Login.data = JSON.parse(localStorage.getItem('token'))
+    const token = localStorage.getItem('token')
 
 
 
@@ -67,6 +70,8 @@ function App() {
 
     }
     const [messages, setMessages] = useState([]);
+
+
 
 
 
@@ -92,30 +97,14 @@ function App() {
 
         const msg = {
             username: user.username,
-            text: e.target.text.value
+            image: user.image,
+            text: e.target.text.value,
+
         };
         socket.emit('CLIENT_MSG', msg);
 
     }
-//fonction pour récupérer le nom d'utilisateur
-    function getUserName() {
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        };
-        fetch(`http://localhost:3001/profile?username=${user.username}`).then(r => r.json()).then(data => {
-            console.log(data)
-            setUser(data)
 
-        })
-    }
-
-    //afficher le nom d'utilisateur
-    useEffect(() => {
-
-        getUserName()
-    }
-    , [user.username])
 
 
 
@@ -130,14 +119,11 @@ function App() {
                     <div className="card">
                         <div className="card-body">
                             <div className="wrapper">
-                               <img></img>
-                                <h2>Bonjour {user.username}</h2>
+                               <img src={user.image}/>
+                                <h2>Bonjour {token}</h2>
                                 <Link to={'/profil'}>Profil</Link>
                                 <button onClick={logout}>Logout</button>
-                                <div className="room">
-                                    <input type="text" placeholder="Room name" value={roomName} onChange={handleRoomNameChange} className={"input_room"}/>
-                                </div>
-                                <Link to={`${roomName}`} className="enter-room-button">Join Room</Link>
+
 
 
                             </div>
@@ -147,7 +133,12 @@ function App() {
                                 {messages.map(msg => {
                                     return (
 
-                                        <div className="msg"><p className="user">{msg.username}</p><p className="text">{msg.text}</p></div>
+                                        <div className="msg"><img className="img_chat" src={msg.image}/> <p className="user">{msg.username}</p><p className="text">{msg.text}</p>
+
+                                        </div>
+
+
+
 
 
 
@@ -177,6 +168,7 @@ function App() {
 
 
 
+
                                 </div>
                             </div>
 
@@ -198,11 +190,19 @@ function App() {
                         font-weight: bold;
                         font-size: 20px;
                         color: #172b4d;
+                        display: inline-block;
                       
                     }
                     .text {
                         font-size: 15px;
                         color: #172b4d;
+                        
+                    }
+                    .img_chat {
+                        width: 50px;
+                        height: 50px;
+                        
+                        border-radius: 50%;
                         
                     }
                    
@@ -362,6 +362,15 @@ function App() {
                 /*responsive tchat*/
                 @media (max-width: 768px) {
                     .card {
+                        width: 100%;
+                        padding: 0;
+                        
+                    }
+                }
+                
+                /*responsive room*/
+                @media (max-width: 768px) {
+                    .room {
                         width: 100%;
                         padding: 0;
                         

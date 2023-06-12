@@ -3,13 +3,19 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import {AppProvider} from "./context/appContext";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
+import {AppContext} from "./context/appContext";
+import Login from "./route/login";
+
+
 
 ReactDOM.render(
   <React.StrictMode>
     <AppProvider />
       <BrowserRouter>
           <Routes>
+                <Route path="/login" element={<Login />} />
+
 
           </Routes>
       </BrowserRouter>

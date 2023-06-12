@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from "react";
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {AppContext, AppProvider} from '../context/appContext'
 import Login from "./login";
 import Signup from "./signup";
 
-export default function Profil({Router}) {
+export default function Profil() {
     const appContext = useContext(AppContext)
     const navigate = useNavigate();
 
@@ -18,7 +18,8 @@ console.log(appContext.currentUser)
     const [user, setUser] = useState(
         {
             username: '',
-            email: ''
+            email: '',
+            image: ''
         }
     );
 
@@ -32,49 +33,125 @@ console.log(appContext.currentUser)
 
     }, [appContext.currentUser, appContext])
 
-    //modifier l'info dans la bdd
-    const inputChange = (e) => {
-        const {name, value} = e.target;
-        setUser({...user, [name]: value})
+
+
+
+//modifier le username
+    const [username, setUsername] = useState('');
+
+    const handleUsernameChange = (e) => {
+        setUsername(e.target.value);
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        //Envoi de l'info dans la bdd
+
+
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+
+
+
+
+    const handleSubmit = (e) => {
+
+
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        //envoyer les données dans la bdd
         const requestOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
+            body: JSON.stringify({username: username})
         };
+        fetch(`http://localhost:3001/users/${user.username}`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+
+
+
+                //rediriger vers la page d'accueil
+                navigate('/login')
+            })
+            .catch(err => console.log(err))
+
+
+
+
+    };
+
+    const handlesubmit2 = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        const requestOptions2 = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({image: formData})
         }
-        fetch(`http://localhost:3001/profile?username=${user.username}&password=${user.email}`).then(r => r.json()).then(data => {
-            console.log(data)
-            setUser(data)
 
-        })
+        fetch(`http://localhost:3001/users/${user.image}`, requestOptions2)
+            .then(response => response.json())
+            .then(data => {
+                    setUser({
+                        ...user,
+                        image: data.image
+                    })
+                }
+            )
+            .catch(err => console.log(err))
 
+    }
 
+    const [email, setEmail] = useState('');
 
+    const handlepasswordChange = (e) => {
+        setEmail(e.target.value);
 
-
-
-
+    }
 
 
 
     return (
         <section className="wrapper">
             <h1>Profil</h1>
-            <form >
+            <form>
+
+                <img src={user?.image} alt="avatar"/>
+                <input type="file" onChange={handleFileChange} />
+                <button onClick={handlesubmit2}>Envoyer</button>
+
+
                 <p>Identifiant: {user?.username}</p>
-                <input  placeholder={"Modifier votre identifiant"} type="text" name="username" value={user.username} onChange={inputChange} />
-                <p>Email: {user?.email}</p>
-                <button onSubmit={handleSubmit} type="submit">Modifier</button>
+                <input
+                    type="text"
+                    value={username}
+                    placeholder="Nouvel identifiant"
+                    onChange={handleUsernameChange}
+                />
+                <p>{appContext.errorMessage}</p>
+
+
+                <button onClick={handleSubmit}>Envoyer</button>
+
+
             </form>
 
 
 
             <style jsx>{`
+                img{
+                    width: 100px;
+                    height: 100px;
+                    background-image: url("https://static.vecteezy.com/ti/vecteur-libre/t2/12040969-creation-de-logo-de-lettre-sms-avec-un-fond-blanc-dans-l-illustrateur-style-de-chevauchement-de-polices-de-l-alphabet-moderne-du-logo-dessins-de-calligraphie-pour-logo-affiche-invitation-etc-vectoriel.jpg");
+                    background-position: center;
+                    
+                    border-radius: 50%;
+                }
             
                 .wrapper {
                     display: flex;
@@ -129,6 +206,39 @@ console.log(appContext.currentUser)
                         width: 100%;
                     }
                     
+                }
+                
+                /*responsive*/
+                @media (max-width: 500px) {
+                    h1 {
+                        font-size: 1.5rem;
+                    }
+                    p {
+                        font-size: 1rem;
+                    }
+                    form {
+                        width: 100%;
+                        max-width: 100%;
+                      
+                    }
+                    input {
+                        font-size: 1rem;
+                    }
+                    button {
+                        font-size: 1rem;
+                    }
+                }
+                /*responsive*/
+                @media (max-width: 400px) {
+                    h1 {
+                        font-size: 1.2rem;
+                    }
+                    p {
+                        font-size: 0.8rem;
+                    }
+                    form {
+                        width: 100%;
+                    }
                 }
             `}</style>
 

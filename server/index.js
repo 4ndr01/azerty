@@ -40,26 +40,28 @@ const userSchema = new Schema({
     username: String,
     password: String,
     email: String,
-    messages: Array
+    messages: Array,
+    image:{
+        type: String
+
+    }
+
+
+
+
 
 }
 );
 
-const roomSchema = new Schema({
-    roomName: String,
-    users: Array,
-    messages: Array
 
-}
-);
 
 const User = mongoose.model('User', userSchema);
-const Room = mongoose.model('Room', roomSchema);
-
 mongoose.connect('mongodb+srv://marv:root@cluster0.l1ulwbg.mongodb.net/test', { useNewUrlParser: true, useUnifiedTopology: true }, () => {
     console.log("connected to database");
 }
 );
+
+
 
 //requetes post
 const bodyParser = require('body-parser');
@@ -73,6 +75,7 @@ app.post('/signup', (req, res) => {
         username: req.body.username,
         password: req.body.password,
         email: req.body.email,
+
 
 
     })
@@ -107,31 +110,60 @@ app.get('/signin', (req, res) => {
 
 
 
-//page profil
-app.get('/profile', (req, res) => {
-
-        const { username, email } = req.query;
-
-        User.findOne({ username: username, email: email })
-
-            .then((user) => {
-                if (user) {
-
-                    res.json(user);
-
-                }
-
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).json({ error: 'An error occurred while searching for the user.' });
-            });
 
 
 
 
-    }
+//modifier le username
+app.put('/users/:username', (req, res) => {
+
+    const username = req.params.username;
+    const newUsername = req.body.username;
+
+    User.findOne({ username: username })
+        .then((user) => {
+            if (user) {
+                user.username = newUsername;
+                user.save();
+                res.json(user);
+            } else {
+                res.json(false);
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: 'An error occurred while searching for the user.' });
+        });
+
+}
 );
+
+//modifier l'image
+
+app.put('/users/:image', (req, res) => {
+    const image = req.params.image;
+    const newImage = req.body.image;
+
+    User.findOne({ image: image })
+        .then((user) => {
+            if (user) {
+                user.image = newImage;
+                user.save();
+                res.json(user);
+            } else {
+                res.json(false);
+            }
+        }
+        )
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: 'An error occurred while searching for the user.' });
+        }
+        );
+
+});
+
+
 
 
 

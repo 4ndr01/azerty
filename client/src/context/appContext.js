@@ -14,6 +14,15 @@ export function AppProvider({children}) {
 
 
 
+    const [errorMessage, setErrorMessage] = useState('');
+
+
+    const showError = (message) => {
+        setErrorMessage(message);
+    }
+
+
+
 
     //login
     const [user, setUser] = useState({
@@ -23,11 +32,13 @@ export function AppProvider({children}) {
     const router = createBrowserRouter([
         {
             path: '/login',
-            element: <Login />
+            //bloquer la page home si pas connecté
+            element: user.loggedIn ? <App /> : <Login />
+
         },
         {
             path: '/',
-            element: user.loggedIn ? (<App />) : (<Login />)
+            element: <Login />
             
 
         },
