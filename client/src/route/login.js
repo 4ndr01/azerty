@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {Link, Route, useNavigate, redirect, Navigate} from 'react-router-dom';
 import {AppContext, AppProvider} from '../context/appContext'
 import {ErrorMessage} from "../context/utils";
-import Profil from "./profil";
+import bcrypt from 'bcryptjs';
 import app from "../App";
 import Switch from "react-switch";
 
@@ -50,6 +50,9 @@ export default function Login({Router}) {
         const response = await fetch(`http://localhost:3001/signin?username=${user.username}&password=${user.password}`, requestOptions);
 
         const data = await response.json();
+        bcrypt.compare(user.password, data.password, function(err, res) {
+            console.log(data)
+});
 
 
         console.log(data)
@@ -64,6 +67,7 @@ export default function Login({Router}) {
         }
     }
     localStorage.setItem('token', JSON.stringify(user.username))
+    localStorage.setItem('token2', JSON.stringify(user.password))
 
     return (
 

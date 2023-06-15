@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const express = require("express");
 const cors = require('cors');
 const app = express();
@@ -5,7 +6,6 @@ const http = require('http');
 app.use(cors());
 const { Server } = require('socket.io');
 const PORT = 3001;
-
 const server = http.createServer(app);
 
 
@@ -70,11 +70,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //inscription
 app.post('/signup', (req, res) => {
+    const { password } = req.body;
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
     console.log(req.body);
     const users = new User({
         username: req.body.username,
-        password: req.body.password,
+        password: hashedPassword,
         email: req.body.email,
+        image: req.body.image
+
 
 
 
@@ -89,6 +94,7 @@ app.post('/signup', (req, res) => {
 app.get('/signin', (req, res) => {
   
         const { username, password } = req.query;
+
 
         User.findOne({ username: username, password: password })
             .then((user) => {
@@ -162,6 +168,26 @@ app.put('/users/:image', (req, res) => {
         );
 
 });
+
+//recupérer les données de l'utilisateur
+app.get('/users/:username', (req, res) => {
+    const username = req.params.username;
+
+    User.findOne({ username: username })
+        .then((user) => {
+            if (user) {
+                res.json(user);
+            } else {
+                res.json(false);
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: 'An error occurred while searching for the user.' });
+        });
+
+}
+);
 
 
 

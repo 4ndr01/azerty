@@ -1,7 +1,10 @@
 import React, {useContext, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {AppContext} from '../context/appContext'
-import {useEffect} from 'react';
+import bcrypt from 'bcryptjs';
+
+import Login from "./login";
+
 
 export default function Signup() {
     const appContext = useContext(AppContext)
@@ -14,13 +17,16 @@ export default function Signup() {
         username: '',
         email: '',
         password: '',
-        password2: ''
+        password2: '',
+        image: ''
     });
 
     const onChange = e => setUser({...user, [e.target.name]: e.target.value});
 
     const [errorMessage, setErrorMessage] = useState('');
 
+    const uppercaseRegex = /[A-Z]/;
+    const specialCharRegex = /[!@#$%^&*]/;
 
     const ShowError = (message) => {
         setErrorMessage(message);
@@ -40,9 +46,24 @@ export default function Signup() {
             )
 
         }
+        if (user.password.length < 6) {
+            ShowError('Le mot de passe doit contenir au moins 6 caractères')
+            console.log('Le mot de passe doit contenir au moins 6 caractères')
+            return(
+                <section>
+                <input type="password" name="password" value={user.password} onChange={onChange} placeholder="Mot de passe" required/>
+                <p>{errorMessage}</p>
+
+            </section>
+            )
+        }
         if (user.username === '' || user.email === '' || user.password === '' || user.password2 === '') {
             ShowError('Veuillez remplir tous les champs')
             console.log('Veuillez remplir tous les champs')
+        }
+        if (!uppercaseRegex.test(user.password) || !specialCharRegex.test(user.password)) {
+            ShowError('Le mot de passe doit contenir au moins une majuscule et un caractère spécial')
+            console.log('Le mot de passe doit contenir au moins une majuscule et un caractère spécial')
         }
         else {
             const requestOptions = {
@@ -50,20 +71,25 @@ export default function Signup() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(user)
             };
+            const salt = bcrypt.genSaltSync(10);
+            const encryptedPassword = bcrypt.hashSync(user.password, salt); // Chiffrement du mot de passe
             const response = await fetch('http://localhost:3001/signup', requestOptions);
             const data = await response.json();
 
 
-            // TODO: check if user is in database
-            if (data === true) {
-                alert('vous avez déjà un compte')
-            }
+
+
+
+            console.log('Mot de passe chiffré :', encryptedPassword);
 
             if (appContext.user.loggedIn === false) {
                 navigate('/home')
             }
 
         }
+
+
+
 
 
 
@@ -92,7 +118,7 @@ export default function Signup() {
                     </li>
                     <p className="error">{errorMessage}</p>
                     <button  type="submit">S'inscrire</button>
-                    <a href="/login">Déjà un compte ?</a>
+                    <Link to={'/login'}>Se connecter</Link>
                 </ul>
             </form>
             <style jsx>{`

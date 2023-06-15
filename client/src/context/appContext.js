@@ -6,6 +6,7 @@ import App from "../App";
 import {RouterProvider} from "react-router-dom";
 import Signup from "../route/signup";
 import Profil from "../route/profil";
+import PrivateRoute from "../route/private_route";
 
 export const AppContext = createContext(undefined);
 
@@ -55,6 +56,10 @@ export function AppProvider({children}) {
         {
             path:'/profil',
             element: <Profil />
+        },
+        {
+            path:'/private',
+            element: <PrivateRoute />
         }
     ]);
 

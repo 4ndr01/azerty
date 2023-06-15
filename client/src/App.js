@@ -7,6 +7,7 @@ import {BrowserRouter, Link, redirect, Route, useNavigate} from 'react-router-do
 import darkMode from '../src/darkMode.css';
 import Login from "./route/login";
 import api from "./context/apiContext";
+import moment from 'moment';
 
 import {AppContext} from "./context/appContext";
 
@@ -72,6 +73,8 @@ function App() {
     const [messages, setMessages] = useState([]);
 
 
+    const currentTime = moment().format('HH:mm');
+    //
 
 
 
@@ -99,6 +102,7 @@ function App() {
             username: user.username,
             image: user.image,
             text: e.target.text.value,
+            time: currentTime,
 
         };
         socket.emit('CLIENT_MSG', msg);
@@ -127,13 +131,13 @@ function App() {
 
 
                             </div>
-                            <div className="card-title">My first chat</div>
+                            <div className="card-title">Le salon</div>
                             <hr/>
                             <div className="messages">
                                 {messages.map(msg => {
                                     return (
 
-                                        <div className="msg"><img className="img_chat" src={msg.image}/> <p className="user">{msg.username}</p><p className="text">{msg.text}</p>
+                                        <div className="msg"><img className="img_chat" src={msg.image}/> <p className="user">{msg.username}</p><p className="text">{msg.text}</p> <p className="heure">{msg.time}</p>
 
                                         </div>
 
@@ -163,7 +167,7 @@ function App() {
                                 <div className="clearfix">
                                     <button type="submit"
                                             className="submit">
-                                        send
+                                        envoyer
                                     </button>
 
 
@@ -176,10 +180,33 @@ function App() {
                         </form>
                     </div>
                 </div>
+
             </div>
             <style jsx="true">{`
+.heure{
+ 
+    color: #172b4d;
+    margin-left: 10px;
+    display: flex;
+    justify-content: flex-end;
+    
+}
                 .App {
                     text-align: center;
+                    background-color: #f5f8fa;
+                    height: 100%;
+                    width: 100%;
+                    
+                    
+                }
+                .messages {
+                    height: 100rem; 
+                    margin-bottom: 10px;
+                    padding: 10px;
+                    background-color: #f5f8fa;
+                    border-radius: 10px;
+                    border: 1px solid #dfe1e6;
+                    
                     
                 }
                 .msg {
@@ -238,6 +265,7 @@ function App() {
                     padding: 30px;
                     text-align: left;
                     
+                    
                 }
                 .card-title {
                     font-weight: bold;
@@ -282,14 +310,19 @@ function App() {
                 
                 
                 button {
-                    background: black;
+                    background: #ccc;
                     border: none;
-                    color: #fff;
+                  
                     padding: 0.5rem 1rem;
                     border-radius: 0.25rem;
                     cursor: pointer;
                     margin-top: 1rem;
                     
+                }
+                button:hover {
+                    background: black;
+                    color: white;
+                    transition: 0.5ms;
                 }
                 input {
                     width: 100%;

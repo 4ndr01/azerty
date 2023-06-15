@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Link, useNavigate} from 'react-router-dom';
+import {Link, redirect, useNavigate} from 'react-router-dom';
 import {AppContext, AppProvider} from '../context/appContext'
 import Login from "./login";
 import Signup from "./signup";
@@ -50,14 +50,32 @@ console.log(appContext.currentUser)
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
     };
-
-
+    const [errorMessage, setErrorMessage] = useState('');
+    const ShowError = (message) => {
+        setErrorMessage(message);
+    }
+    const uppercaseRegex = /[A-Z]/;
+    const specialCharRegex = /[!@#$%^&*]/;
 
 
     const handleSubmit = (e) => {
 
 
         e.preventDefault();
+        if (username === '') {
+            ShowError('Veuillez remplir tous les champs')
+            //ne pas envoyer les données
+            return;
+        }
+        if (username.length < 6) {
+            ShowError('Le nom d\'utilisateur doit contenir au moins 6 caractères')
+            //ne pas envoyer les données
+            return;
+        }
+
+
+        else {
+
         const formData = new FormData();
         formData.append('file', selectedFile);
 
@@ -74,77 +92,106 @@ console.log(appContext.currentUser)
 
 
 
-                //rediriger vers la page d'accueil
-                navigate('/login')
+                //mettre à jour le context
+                appContext.setCurrentUser({
+                    ...appContext.currentUser,
+                    username: data.username
+})
+                setUser({
+                    ...user,
+                    username: data.username
+            })
+                console.log(appContext.currentUser)
             })
             .catch(err => console.log(err))
-
-
-
-
-    };
-
-    const handlesubmit2 = (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        const requestOptions2 = {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({image: formData})
-        }
-
-        fetch(`http://localhost:3001/users/${user.image}`, requestOptions2)
-            .then(response => response.json())
-            .then(data => {
-                    setUser({
-                        ...user,
-                        image: data.image
-                    })
-                }
-            )
-            .catch(err => console.log(err))
+        ShowError('Votre identifiant a bien été modifié veuillez vous reconnecter')
+        //si le champ est vide
 
     }
+    }
 
-    const [email, setEmail] = useState('');
 
-    const handlepasswordChange = (e) => {
-        setEmail(e.target.value);
 
+    //rediriger vers la page login
+    const handleLogout = () => {
+        localStorage.removeItem('token')
+        navigate('/login')
+    }
+
+
+
+    const token = localStorage.getItem('token')
+    const token2 = localStorage.getItem('token2')
+
+    const logout = (e) => {
+        e.preventDefault();
+        appContext.setCurrentUser(null)
+        appContext.user.loggedIn = false;
+        localStorage.removeItem('token')
+        navigate('/login')
     }
 
 
 
     return (
         <section className="wrapper">
-            <h1>Profil</h1>
             <form>
+                <button className="logout" onClick={logout}>Logout</button>
 
-                <img src={user?.image} alt="avatar"/>
-                <input type="file" onChange={handleFileChange} />
-                <button onClick={handlesubmit2}>Envoyer</button>
+                <h1>Profil</h1>
 
 
-                <p>Identifiant: {user?.username}</p>
+
+                <img src={user?.image}/>
+
+            </form>
+
+            <form>
+                <p>Mot de passe</p>
+                <input className="input" type="password" value={user?.password} placeholder="Mot de passe" disabled/>
+                <p>Identifiant: {token}</p>
                 <input
                     type="text"
                     value={username}
                     placeholder="Nouvel identifiant"
                     onChange={handleUsernameChange}
                 />
-                <p>{appContext.errorMessage}</p>
+                <p className="error2">{errorMessage}</p>
 
 
                 <button onClick={handleSubmit}>Envoyer</button>
-
 
             </form>
 
 
 
+
+
             <style jsx>{`
-                img{
+                  .input {
+                  border: none;
+                  }
+                  .logout {
+                    background-color: #ccc;
+                    border: none;
+                    padding: 1rem;
+                    border-radius: 5px;
+                    font-size: 1rem;
+                    margin-bottom: 1rem;
+                    
+                  }
+                  .logout:hover {
+                    background-color: black;
+                    color: white;
+                    cursor: pointer;
+                    transition: 0.5s;
+                    
+                  }
+                  .error2 {
+                    color: green;
+                    
+                  }
+               img{
                     width: 100px;
                     height: 100px;
                     background-image: url("https://static.vecteezy.com/ti/vecteur-libre/t2/12040969-creation-de-logo-de-lettre-sms-avec-un-fond-blanc-dans-l-illustrateur-style-de-chevauchement-de-polices-de-l-alphabet-moderne-du-logo-dessins-de-calligraphie-pour-logo-affiche-invitation-etc-vectoriel.jpg");
